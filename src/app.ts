@@ -5,14 +5,20 @@ import {
   validatorCompiler,
   serializerCompiler,
 } from "@/shared/validation/zod.js";
+import { env } from "./config/env.js";
+
+const logger =
+  env.NODE_ENV === "development"
+    ? {
+        transport: {
+          target: "pino-pretty",
+        },
+      }
+    : true;
 
 export async function buildApp() {
   const fastify = Fastify({
-    logger: {
-      transport: {
-        target: "pino-pretty",
-      },
-    },
+    logger,
   });
 
   // validator and serializer zod schema
