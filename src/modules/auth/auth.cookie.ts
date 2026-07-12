@@ -10,7 +10,7 @@ class AuthCookie {
   ): CookieSerializeOptions => ({
     httpOnly: true,
     maxAge: data?.maxAge || 60 * 15, //15 minutes,
-    sameSite: "lax",
+    sameSite: env.NODE_ENV === "production" ? "none" : "lax",
     secure: env.NODE_ENV === "production",
     signed: true,
     path: "/",
