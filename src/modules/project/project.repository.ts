@@ -1,5 +1,5 @@
 import { ProjectModel } from "./project.model.js";
-import { CreateProjectType } from "./project.types.js";
+import { CreateProjectType, UpdateProjectType } from "./project.types.js";
 
 class ProjectRepository {
   async create(data: CreateProjectType) {
@@ -35,13 +35,29 @@ class ProjectRepository {
       .lean();
   }
 
-  async updateProjectFavouriteDB(projectId: string, bool: boolean) {
+  async updateFavourite(projectId: string, bool: boolean) {
     return ProjectModel.findOneAndUpdate(
       {
         _id: projectId,
       },
       {
         favourite: bool,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+  }
+
+  async updateNameAndFavourite(data: UpdateProjectType) {
+    return ProjectModel.findOneAndUpdate(
+      {
+        _id: data._id,
+      },
+      {
+        name: data.name,
+        favourite: data.favourite,
       },
       {
         new: true,

@@ -1,5 +1,5 @@
 import { projectRepository } from "./project.repository.js";
-import { CreateProjectType } from "./project.types.js";
+import { CreateProjectType, UpdateProjectType } from "./project.types.js";
 
 class ProjectService {
   async create(data: CreateProjectType) {
@@ -10,6 +10,11 @@ class ProjectService {
   async getByUserId(userId: string) {
     const results = await projectRepository.getByUserId(userId);
     return results;
+  }
+
+  async updateNameFavourite(data: UpdateProjectType) {
+    const result = await projectRepository.updateNameAndFavourite(data);
+    return result;
   }
 }
 

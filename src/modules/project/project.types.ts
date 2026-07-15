@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 
 export interface Project {
   userId: Types.ObjectId;
@@ -9,4 +9,11 @@ export interface Project {
   updatedAt: Date;
 }
 
+export type ProjectDocument = HydratedDocument<Project>;
+
 export type CreateProjectType = Pick<Project, "userId" | "name" | "favourite">;
+
+export type UpdateProjectType = Pick<
+  ProjectDocument,
+  "_id" | "name" | "favourite"
+>;

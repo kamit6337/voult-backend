@@ -7,3 +7,11 @@ export const createProjectSchema = projectZodSchema.pick({
 });
 
 export type CreateProjectSchemaType = z.infer<typeof createProjectSchema>;
+
+export const updateProjectSchema = projectZodSchema.pick({
+  _id: true,
+  name: true,
+  favourite: true,
+});
+
+export type UpdateProjectSchemaType = z.infer<typeof updateProjectSchema>;

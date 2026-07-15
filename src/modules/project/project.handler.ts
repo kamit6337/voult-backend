@@ -1,5 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { CreateProjectSchemaType } from "./project.request.js";
+import {
+  CreateProjectSchemaType,
+  UpdateProjectSchemaType,
+} from "./project.request.js";
 import { projectService } from "./project.service.js";
 import convertToMongoId from "@/utils/convertToMongoId.js";
 
@@ -25,6 +28,21 @@ class ProjectHandler {
     const { userId } = request.userObj;
 
     const result = await projectService.getByUserId(userId);
+
+    return reply.send(result);
+  }
+
+  async updateNameFavourite(
+    request: FastifyRequest<{ Body: UpdateProjectSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const { _id, name, favourite } = request.body;
+
+    const result = await projectService.updateNameFavourite({
+      _id: convertToMongoId(_id),
+      name,
+      favourite,
+    });
 
     return reply.send(result);
   }
