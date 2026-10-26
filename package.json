@@ -1,6 +1,6 @@
 {
   "name": "voult-backend",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Production Fastify Backend",
   "private": true,
   "type": "module",
