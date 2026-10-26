@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
 import apiV1 from "./api-v1/api-v1.js";
-import healthRoute from "../modules/health/routes.js";
+import healthRoute from "../modules/health/health.routes.js";
 
 const routes: FastifyPluginAsync = async (fastify) => {
   // Public
