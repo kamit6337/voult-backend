@@ -21,6 +21,9 @@ export type CreateSecretType = Pick<
   "userId" | "projectId" | "name" | "value" | "favourite"
 >;
 
-export type UpdateSecretRepoType = Pick<Secret, "name" | "value"> & {
+export type UpdateSecretRepoType = Pick<
+  Secret,
+  "name" | "value" | "favourite"
+> & {
   _id: Types.ObjectId;
 };

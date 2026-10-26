@@ -9,3 +9,27 @@ export const createSecretSchema = secretZodSchema.pick({
 });
 
 export type CreateSecretSchemaType = z.infer<typeof createSecretSchema>;
+
+export const updateSecretSchema = secretZodSchema.pick({
+  _id: true,
+  name: true,
+  value: true,
+  favourite: true,
+});
+
+export type UpdateSecretSchemaType = z.infer<typeof updateSecretSchema>;
+
+export const updateSecretFavouriteSchema = secretZodSchema.pick({
+  _id: true,
+  favourite: true,
+});
+
+export type UpdateSecretFavouriteSchemaType = z.infer<
+  typeof updateSecretFavouriteSchema
+>;
+
+export const deleteSecretSchema = secretZodSchema.pick({
+  _id: true,
+});
+
+export type DeleteSecretSchemaType = z.infer<typeof deleteSecretSchema>;

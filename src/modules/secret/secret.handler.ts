@@ -1,6 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { secretService } from "./secret.service.js";
-import { CreateSecretSchemaType } from "./secret.request.js";
+import {
+  CreateSecretSchemaType,
+  DeleteSecretSchemaType,
+  UpdateSecretFavouriteSchemaType,
+  UpdateSecretSchemaType,
+} from "./secret.request.js";
 import convertToMongoId from "@/utils/convertToMongoId.js";
 
 class SecretHandler {
@@ -25,6 +30,43 @@ class SecretHandler {
       value: data.value,
       favourite: data.favourite,
     });
+
+    return reply.send(result);
+  }
+
+  async updateValue(
+    request: FastifyRequest<{ Body: UpdateSecretSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const data = request.body;
+
+    const result = await secretService.updateValue({
+      _id: convertToMongoId(data._id),
+      name: data.name,
+      value: data.value,
+      favourite: data.favourite,
+    });
+
+    return reply.send(result);
+  }
+
+  async updateFavourite(
+    request: FastifyRequest<{ Body: UpdateSecretFavouriteSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const result = await secretService.updateFavourite(
+      request.body._id,
+      request.body.favourite,
+    );
+
+    return reply.send(result);
+  }
+
+  async deleteSecret(
+    request: FastifyRequest<{ Body: DeleteSecretSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const result = await secretService.deleteSecret(request.body._id);
 
     return reply.send(result);
   }

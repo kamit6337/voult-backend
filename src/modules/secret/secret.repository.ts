@@ -67,6 +67,7 @@ class SecretRepository {
 
     secret.name = data.name;
     secret.value = data.value;
+    secret.favourite = data.favourite;
 
     await secret.save();
 
@@ -103,6 +104,12 @@ class SecretRepository {
         projectId,
       },
     );
+  }
+
+  async deleteSecret(secretId: string) {
+    return SecretModel.findOneAndDelete({
+      _id: secretId,
+    });
   }
 }
 

@@ -13,4 +13,6 @@ export const secretZodSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const zodString = z.string().min(3);
+
 export type SecretZodSchemaType = z.infer<typeof secretZodSchema>;
