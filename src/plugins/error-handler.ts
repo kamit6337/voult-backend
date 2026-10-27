@@ -5,7 +5,7 @@ import fp from "fastify-plugin";
 export default fp(async (fastify) => {
   await fastify.setErrorHandler((error: any, request, reply) => {
     let statusCode = 500;
-    let errMsg = "Internal Server Error";
+    let errMsg = error.message || "Internal Server Error";
 
     if (error instanceof AppError) {
       statusCode = error.statusCode;
@@ -85,6 +85,11 @@ export default fp(async (fastify) => {
 
     if (error.name === "Error") {
       statusCode = 404;
+      errMsg = error.message;
+    }
+
+    if (error.name === "FastifyError") {
+      statusCode = 500;
       errMsg = error.message;
     }
 

@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
   CreateProjectSchemaType,
+  DeleteProjectSchemaType,
   UpdateProjectSchemaType,
 } from "./project.request.js";
 import { projectService } from "./project.service.js";
@@ -43,6 +44,15 @@ class ProjectHandler {
       name,
       favourite,
     });
+
+    return reply.send(result);
+  }
+
+  async deleteProject(
+    request: FastifyRequest<{ Querystring: DeleteProjectSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const result = await projectService.deleteProject(request.query._id);
 
     return reply.send(result);
   }

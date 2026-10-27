@@ -3,6 +3,10 @@ import { CreateProjectType, UpdateProjectType } from "./project.types.js";
 
 class ProjectRepository {
   async create(data: CreateProjectType) {
+    if (!data?.userId || !data.name || !Object.hasOwn(data, "favourite")) {
+      throw new Error("Fields is empty");
+    }
+
     return ProjectModel.create({
       userId: data.userId,
       name: data.name,
@@ -11,6 +15,8 @@ class ProjectRepository {
   }
 
   async getByUserId(userId: string, page = 1, limit = 10) {
+    if (!userId) throw new Error("UserId is missing");
+
     const skip = (page - 1) * limit;
 
     return ProjectModel.find({
@@ -18,11 +24,12 @@ class ProjectRepository {
     })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
-      .lean();
+      .limit(limit);
   }
 
   async getFavouriteByUserId(userId: string, page = 1, limit = 5) {
+    if (!userId) throw new Error("UserId is missing");
+
     const skip = (page - 1) * limit;
 
     return ProjectModel.find({
@@ -36,6 +43,9 @@ class ProjectRepository {
   }
 
   async updateFavourite(projectId: string, bool: boolean) {
+    if (!projectId || typeof bool !== "boolean")
+      throw new Error("ProjectId is missing");
+
     return ProjectModel.findOneAndUpdate(
       {
         _id: projectId,
@@ -51,6 +61,10 @@ class ProjectRepository {
   }
 
   async updateNameAndFavourite(data: UpdateProjectType) {
+    if (!data?._id || !data.name || !Object.hasOwn(data, "favourite")) {
+      throw new Error("Fields is empty");
+    }
+
     return ProjectModel.findOneAndUpdate(
       {
         _id: data._id,
@@ -64,6 +78,14 @@ class ProjectRepository {
         runValidators: true,
       },
     );
+  }
+
+  async deleteProject(projectId: string) {
+    if (!projectId) throw new Error("ProjectId is missing");
+
+    return ProjectModel.findOneAndDelete({
+      _id: projectId,
+    });
   }
 }
 

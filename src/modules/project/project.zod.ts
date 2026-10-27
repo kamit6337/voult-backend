@@ -10,4 +10,8 @@ export const projectZodSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const projectArraySchema = z.array(projectZodSchema);
+
+export const zodString = z.string().min(3);
+
 export type ProjectZodSchemaType = z.infer<typeof projectZodSchema>;
