@@ -107,6 +107,10 @@ class SecretRepository {
   }
 
   async deleteSecret(secretId: string) {
+    console.log("secretId", secretId);
+
+    if (!secretId) throw new Error("SecretId is missing");
+
     return SecretModel.findOneAndDelete({
       _id: secretId,
     });

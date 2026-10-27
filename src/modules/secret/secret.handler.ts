@@ -63,10 +63,10 @@ class SecretHandler {
   }
 
   async deleteSecret(
-    request: FastifyRequest<{ Body: DeleteSecretSchemaType }>,
+    request: FastifyRequest<{ Querystring: DeleteSecretSchemaType }>,
     reply: FastifyReply,
   ) {
-    const result = await secretService.deleteSecret(request.body._id);
+    const result = await secretService.deleteSecret(request.query._id);
 
     return reply.send(result);
   }

@@ -27,6 +27,10 @@ class SecretService {
   async deleteSecret(secretId: string) {
     const result = await secretRepository.deleteSecret(secretId);
 
+    console.log("result", result);
+
+    if (!result) throw new Error("Issue in deleting. Please try later");
+
     return "Successfully Deleted";
   }
 }

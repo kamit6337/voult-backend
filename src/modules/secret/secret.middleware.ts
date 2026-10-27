@@ -37,7 +37,7 @@ export const updateSecretFavouriteValidationSchema: FastifySchema = {
 export const deleteSecretValidationSchema: FastifySchema = {
   tags: ["Secrets"],
   summary: "delete",
-  body: deleteSecretSchema,
+  querystring: deleteSecretSchema,
   response: {
     200: zodString,
   },
