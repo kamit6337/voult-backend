@@ -4,6 +4,7 @@ import {
   createProjectValidation,
   deleteProjectValidation,
   getProjectValidation,
+  getSingleProjectValidation,
   updateProjectValidation,
 } from "./project.middleware.js";
 
@@ -14,6 +15,12 @@ export const projectRoutes: FastifyPluginAsync = async (fastify) => {
     "/",
     { schema: getProjectValidation },
     projectHandler.getByUserId,
+  );
+
+  fastify.get(
+    "/single",
+    { schema: getSingleProjectValidation },
+    projectHandler.getSingleProject,
   );
 
   fastify.patch(

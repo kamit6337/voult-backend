@@ -9,7 +9,7 @@ export const toSecretResponse = (
   name: secret.name,
   value: secret.value,
   favourite: secret.favourite,
-  projectId: secret.projectId ? secret.projectId.toString() : undefined,
+  projectId: secret.projectId ? secret.projectId.toString() : null,
   createdAt: secret.createdAt,
   updatedAt: secret.updatedAt,
 });

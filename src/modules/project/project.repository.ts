@@ -1,3 +1,4 @@
+import { AppError } from "@/shared/errors/app-error.js";
 import { ProjectModel } from "./project.model.js";
 import { CreateProjectType, UpdateProjectType } from "./project.types.js";
 
@@ -12,6 +13,12 @@ class ProjectRepository {
       name: data.name,
       favourite: data.favourite,
     });
+  }
+
+  async getSingleProject(projectId: string) {
+    if (!projectId) throw new AppError(500, "ProjectId is not provided");
+
+    return ProjectModel.findOne({ _id: projectId });
   }
 
   async getByUserId(userId: string, page = 1, limit = 10) {

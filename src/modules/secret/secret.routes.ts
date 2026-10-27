@@ -3,12 +3,24 @@ import { secretHandler } from "./secret.handler.js";
 import {
   createSecretValidationSchema,
   deleteSecretValidationSchema,
+  getSecretByProjectIdValidationSchema,
+  getSecretByUserIdValidationSchema,
   updateSecretFavouriteValidationSchema,
   updateSecretValidationSchema,
 } from "./secret.middleware.js";
 
 export const secretRoutes: FastifyPluginAsync = async (fastify) => {
-  fastify.get("/", secretHandler.getByUserId);
+  fastify.get(
+    "/",
+    { schema: getSecretByUserIdValidationSchema },
+    secretHandler.getByUserId,
+  );
+
+  fastify.get(
+    "/project",
+    { schema: getSecretByProjectIdValidationSchema },
+    secretHandler.getByProjectId,
+  );
 
   fastify.post(
     "/",

@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import {
   CreateProjectSchemaType,
   DeleteProjectSchemaType,
+  GetSingleProjectSchemaType,
   UpdateProjectSchemaType,
 } from "./project.request.js";
 import { projectService } from "./project.service.js";
@@ -21,6 +22,15 @@ class ProjectHandler {
       name,
       favourite,
     });
+
+    return reply.send(result);
+  }
+
+  async getSingleProject(
+    request: FastifyRequest<{ Querystring: GetSingleProjectSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const result = await projectService.getSingleProject(request.query.id);
 
     return reply.send(result);
   }

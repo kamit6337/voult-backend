@@ -2,10 +2,32 @@ import { FastifySchema } from "fastify";
 import {
   createSecretSchema,
   deleteSecretSchema,
+  getSecretByProjectIdSchema,
   updateSecretFavouriteSchema,
   updateSecretSchema,
 } from "./secret.request.js";
-import { secretZodSchema, zodString } from "./secret.zod.js";
+import {
+  secretArrZodSchema,
+  secretZodSchema,
+  zodString,
+} from "./secret.zod.js";
+
+export const getSecretByUserIdValidationSchema: FastifySchema = {
+  tags: ["Secrets"],
+  summary: "get",
+  response: {
+    200: secretArrZodSchema,
+  },
+};
+
+export const getSecretByProjectIdValidationSchema: FastifySchema = {
+  tags: ["Secrets"],
+  summary: "get-projectId",
+  querystring: getSecretByProjectIdSchema,
+  response: {
+    200: secretArrZodSchema,
+  },
+};
 
 export const createSecretValidationSchema: FastifySchema = {
   tags: ["Secrets"],

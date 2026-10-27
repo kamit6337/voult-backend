@@ -1,6 +1,12 @@
 import z from "zod";
 import { projectZodSchema } from "./project.zod.js";
 
+export const getSingleProjectSchema = z.object({
+  id: z.string().min(3),
+});
+
+export type GetSingleProjectSchemaType = z.infer<typeof getSingleProjectSchema>;
+
 export const createProjectSchema = projectZodSchema.pick({
   name: true,
   favourite: true,

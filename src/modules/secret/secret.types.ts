@@ -2,7 +2,7 @@ import { HydratedDocument, Types } from "mongoose";
 
 export interface Secret {
   userId: Types.ObjectId;
-  projectId?: Types.ObjectId;
+  projectId: Types.ObjectId | null;
 
   name: string;
   value: string;

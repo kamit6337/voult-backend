@@ -2,6 +2,7 @@ import { FastifySchema } from "fastify";
 import {
   createProjectSchema,
   deleteProjectSchema,
+  getSingleProjectSchema,
   updateProjectSchema,
 } from "./project.request.js";
 import {
@@ -14,6 +15,15 @@ export const createProjectValidation: FastifySchema = {
   tags: ["Project"],
   summary: "create",
   body: createProjectSchema,
+  response: {
+    200: projectZodSchema,
+  },
+};
+
+export const getSingleProjectValidation: FastifySchema = {
+  tags: ["Project"],
+  summary: "single-project",
+  querystring: getSingleProjectSchema,
   response: {
     200: projectZodSchema,
   },

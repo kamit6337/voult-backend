@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { Secret } from "./secret.types.js";
 import { encrypt } from "@/shared/utils/encrypt.js";
+import { ProjectModel } from "../project/project.model.js";
+import { AppError } from "@/shared/errors/app-error.js";
 
 const secretSchema = new mongoose.Schema<Secret>(
   {
@@ -67,6 +69,14 @@ secretSchema.index({
 secretSchema.pre("save", function () {
   if (!this.isModified("value")) return;
   this.value = encrypt(this.value);
+});
+
+secretSchema.pre("save", async function () {
+  if (!this.projectId) return;
+
+  const checkExist = await ProjectModel.exists({ _id: this.projectId });
+
+  if (!checkExist) throw new AppError(404, "Wrong Project Id");
 });
 
 export const SecretModel = mongoose.model("Secret", secretSchema);

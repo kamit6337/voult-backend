@@ -5,7 +5,12 @@ import { CreateSecretType, UpdateSecretRepoType } from "./secret.types.js";
 class SecretService {
   async getByUserId(userId: string) {
     const results = await secretRepository.getByUserId(userId);
-    return results;
+    return results.map((i) => toSecretResponse(i));
+  }
+
+  async getByProjectId(projectId: string) {
+    const results = await secretRepository.getByProjectId(projectId);
+    return results.map((i) => toSecretResponse(i));
   }
 
   async create(data: CreateSecretType) {

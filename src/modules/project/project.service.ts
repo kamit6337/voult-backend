@@ -9,6 +9,14 @@ class ProjectService {
     return toProjectResponse(result);
   }
 
+  async getSingleProject(projectId: string) {
+    const result = await projectRepository.getSingleProject(projectId);
+
+    if (!result) throw new AppError(404, "ProjectID is wrong");
+
+    return toProjectResponse(result);
+  }
+
   async getByUserId(userId: string) {
     const results = await projectRepository.getByUserId(userId);
     return results.map((i) => toProjectResponse(i));

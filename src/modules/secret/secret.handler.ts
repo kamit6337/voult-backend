@@ -3,6 +3,7 @@ import { secretService } from "./secret.service.js";
 import {
   CreateSecretSchemaType,
   DeleteSecretSchemaType,
+  GetSecretByProjectIdSchemaType,
   UpdateSecretFavouriteSchemaType,
   UpdateSecretSchemaType,
 } from "./secret.request.js";
@@ -16,6 +17,14 @@ class SecretHandler {
     return reply.send(results);
   }
 
+  async getByProjectId(
+    request: FastifyRequest<{ Querystring: GetSecretByProjectIdSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const results = await secretService.getByProjectId(request.query.id);
+    return reply.send(results);
+  }
+
   async create(
     request: FastifyRequest<{ Body: CreateSecretSchemaType }>,
     reply: FastifyReply,
@@ -25,7 +34,7 @@ class SecretHandler {
 
     const result = await secretService.create({
       userId: convertToMongoId(userId),
-      projectId: data.projectId ? convertToMongoId(data.projectId) : undefined,
+      projectId: data.projectId ? convertToMongoId(data.projectId) : null,
       name: data.name,
       value: data.value,
       favourite: data.favourite,

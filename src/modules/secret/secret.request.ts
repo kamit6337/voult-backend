@@ -1,6 +1,14 @@
 import z from "zod";
 import { secretZodSchema } from "./secret.zod.js";
 
+export const getSecretByProjectIdSchema = z.object({
+  id: z.string().min(3),
+});
+
+export type GetSecretByProjectIdSchemaType = z.infer<
+  typeof getSecretByProjectIdSchema
+>;
+
 export const createSecretSchema = secretZodSchema.pick({
   projectId: true,
   name: true,
