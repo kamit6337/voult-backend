@@ -23,7 +23,7 @@ export type CreateSecretType = Pick<
 
 export type UpdateSecretRepoType = Pick<
   Secret,
-  "name" | "value" | "favourite"
+  "name" | "value" | "favourite" | "projectId"
 > & {
   _id: Types.ObjectId;
 };

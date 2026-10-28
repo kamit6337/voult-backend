@@ -54,6 +54,7 @@ class SecretHandler {
       name: data.name,
       value: data.value,
       favourite: data.favourite,
+      projectId: data.projectId ? convertToMongoId(data.projectId) : null,
     });
 
     return reply.send(result);

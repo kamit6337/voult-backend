@@ -68,6 +68,7 @@ class SecretRepository {
     secret.name = data.name;
     secret.value = data.value;
     secret.favourite = data.favourite;
+    secret.projectId = data.projectId;
 
     await secret.save();
 

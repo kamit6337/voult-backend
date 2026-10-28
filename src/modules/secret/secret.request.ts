@@ -23,6 +23,7 @@ export const updateSecretSchema = secretZodSchema.pick({
   name: true,
   value: true,
   favourite: true,
+  projectId: true,
 });
 
 export type UpdateSecretSchemaType = z.infer<typeof updateSecretSchema>;
