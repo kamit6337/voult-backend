@@ -11,6 +11,7 @@ export type GetSecretByUserIdSchemaType = z.infer<
 
 export const getSecretByProjectIdSchema = z.object({
   id: z.string().min(3),
+  cursor: cursorZodSchema.nullable().default(null),
 });
 
 export type GetSecretByProjectIdSchemaType = z.infer<

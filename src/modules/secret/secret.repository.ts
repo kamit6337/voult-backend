@@ -3,14 +3,14 @@ import { SecretModel } from "./secret.model.js";
 import {
   CreateSecretType,
   Secret,
-  SecretDocument,
   UpdateSecretRepoType,
 } from "./secret.types.js";
 import { decryptSecretValue } from "@/shared/utils/decryptSecretValue.js";
 import mongoose from "mongoose";
 import { toSecretResponse } from "./secret.mapper.js";
-import { GetSecretByUserIdResponseType } from "./secret.response.js";
+import { GetSecretByPaginationResponseType } from "./secret.response.js";
 import { CursorZodSchemaType, SecretZodSchemaType } from "./secret.zod.js";
+import { secretPaginatedQuery } from "./secret.function.js";
 
 class SecretRepository {
   async create(data: CreateSecretType): Promise<SecretZodSchemaType> {
@@ -23,7 +23,6 @@ class SecretRepository {
     });
 
     const decryptValue = decryptSecretValue(secret);
-
     return toSecretResponse(decryptValue);
   }
 
@@ -31,7 +30,7 @@ class SecretRepository {
     userId: string,
     cursor: CursorZodSchemaType | null,
     limit = 5,
-  ): Promise<GetSecretByUserIdResponseType> {
+  ): Promise<GetSecretByPaginationResponseType> {
     if (!mongoose.isValidObjectId(userId)) {
       throw new AppError(404, "Invalid userId");
     }
@@ -40,81 +39,43 @@ class SecretRepository {
       userId,
     };
 
-    if (cursor) {
-      const date = new Date(cursor.createdAt);
+    const result = await secretPaginatedQuery(query, cursor, limit);
+    return result;
+  }
 
-      if (
-        Number.isNaN(date.getTime()) ||
-        !mongoose.isValidObjectId(cursor._id)
-      ) {
-        throw new AppError(404, "Invalid cursor");
-      }
-
-      query.$or = [
-        {
-          createdAt: { $lt: date },
-        },
-        {
-          createdAt: date,
-          _id: {
-            $lt: new mongoose.Types.ObjectId(cursor._id),
-          },
-        },
-      ];
+  async getFavouriteByUserId(
+    userId: string,
+    cursor: CursorZodSchemaType | null,
+    limit = 5,
+  ): Promise<GetSecretByPaginationResponseType> {
+    if (!mongoose.isValidObjectId(userId)) {
+      throw new AppError(404, "Invalid userId");
     }
 
-    const secrets = await SecretModel.find(query)
-      .sort({ createdAt: -1, _id: -1 })
-      .limit(limit + 1);
-
-    const hasNextPage = secrets.length > limit;
-
-    const data = secrets.slice(0, limit);
-
-    const lastProject = data.at(-1);
-
-    const nextCursor =
-      hasNextPage && lastProject
-        ? {
-            createdAt: lastProject.createdAt.toISOString(),
-            _id: lastProject._id.toString(),
-          }
-        : null;
-
-    // return decryptSecretValue(result);
-
-    return {
-      data: decryptSecretValue(data).map((i) => toSecretResponse(i)),
-      nextCursor,
-      hasNextPage,
-    };
-  }
-
-  async getFavouriteByUserId(userId: string, page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
-
-    const result = await SecretModel.find({
+    const query: mongoose.QueryFilter<Secret> = {
       userId,
       favourite: true,
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    };
 
-    return decryptSecretValue(result);
+    const result = await secretPaginatedQuery(query, cursor, limit);
+    return result;
   }
 
-  async getByProjectId(projectId: string, page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
+  async getByProjectId(
+    projectId: string,
+    cursor: CursorZodSchemaType | null,
+    limit = 5,
+  ): Promise<GetSecretByPaginationResponseType> {
+    if (!mongoose.isValidObjectId(projectId)) {
+      throw new AppError(404, "Invalid projectId");
+    }
 
-    const result = await SecretModel.find({
+    const query: mongoose.QueryFilter<Secret> = {
       projectId,
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    };
 
-    return decryptSecretValue(result);
+    const result = await secretPaginatedQuery(query, cursor, limit);
+    return result;
   }
 
   async updateSingle(data: UpdateSecretRepoType) {

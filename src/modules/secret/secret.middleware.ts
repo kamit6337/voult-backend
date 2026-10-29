@@ -12,14 +12,14 @@ import {
   secretZodSchema,
   zodString,
 } from "./secret.zod.js";
-import { getSecretByUserIdResponseSchema } from "./secret.response.js";
+import { getSecretByPaginationResponseSchema } from "./secret.response.js";
 
 export const getSecretByUserIdValidationSchema: FastifySchema = {
   tags: ["Secrets"],
   summary: "get",
   querystring: getSecretByUserIdSchema,
   response: {
-    200: getSecretByUserIdResponseSchema,
+    200: getSecretByPaginationResponseSchema,
   },
 };
 
@@ -28,7 +28,7 @@ export const getSecretByProjectIdValidationSchema: FastifySchema = {
   summary: "get-projectId",
   querystring: getSecretByProjectIdSchema,
   response: {
-    200: secretArrZodSchema,
+    200: getSecretByPaginationResponseSchema,
   },
 };
 

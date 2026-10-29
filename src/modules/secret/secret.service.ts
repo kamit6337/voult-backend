@@ -1,6 +1,6 @@
 import { toSecretResponse } from "./secret.mapper.js";
 import { secretRepository } from "./secret.repository.js";
-import { GetSecretByUserIdResponseType } from "./secret.response.js";
+import { GetSecretByPaginationResponseType } from "./secret.response.js";
 import { CreateSecretType, UpdateSecretRepoType } from "./secret.types.js";
 import { CursorZodSchemaType, SecretZodSchemaType } from "./secret.zod.js";
 
@@ -8,14 +8,25 @@ class SecretService {
   async getByUserId(
     userId: string,
     cursor: CursorZodSchemaType | null,
-  ): Promise<GetSecretByUserIdResponseType> {
+  ): Promise<GetSecretByPaginationResponseType> {
     const results = await secretRepository.getByUserId(userId, cursor);
     return results;
   }
 
-  async getByProjectId(projectId: string) {
-    const results = await secretRepository.getByProjectId(projectId);
-    return results.map((i) => toSecretResponse(i));
+  async getFavouriteByUserId(
+    userId: string,
+    cursor: CursorZodSchemaType | null,
+  ): Promise<GetSecretByPaginationResponseType> {
+    const results = await secretRepository.getFavouriteByUserId(userId, cursor);
+    return results;
+  }
+
+  async getByProjectId(
+    projectId: string,
+    cursor: CursorZodSchemaType | null,
+  ): Promise<GetSecretByPaginationResponseType> {
+    const results = await secretRepository.getByProjectId(projectId, cursor);
+    return results;
   }
 
   async create(data: CreateSecretType): Promise<SecretZodSchemaType> {

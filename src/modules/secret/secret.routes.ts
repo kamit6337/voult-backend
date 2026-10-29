@@ -17,6 +17,12 @@ export const secretRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   fastify.get(
+    "/favourite",
+    { schema: getSecretByUserIdValidationSchema },
+    secretHandler.getFavouriteByUserId,
+  );
+
+  fastify.get(
     "/project",
     { schema: getSecretByProjectIdValidationSchema },
     secretHandler.getByProjectId,

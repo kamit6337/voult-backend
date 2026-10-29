@@ -25,11 +25,28 @@ class SecretHandler {
     return reply.send(results);
   }
 
+  async getFavouriteByUserId(
+    request: FastifyRequest<{ Querystring: GetSecretByUserIdSchemaType }>,
+    reply: FastifyReply,
+  ) {
+    const { userId } = request.userObj;
+
+    const results = await secretService.getFavouriteByUserId(
+      userId,
+      request.query.cursor,
+    );
+
+    return reply.send(results);
+  }
+
   async getByProjectId(
     request: FastifyRequest<{ Querystring: GetSecretByProjectIdSchemaType }>,
     reply: FastifyReply,
   ) {
-    const results = await secretService.getByProjectId(request.query.id);
+    const results = await secretService.getByProjectId(
+      request.query.id,
+      request.query.cursor,
+    );
     return reply.send(results);
   }
 

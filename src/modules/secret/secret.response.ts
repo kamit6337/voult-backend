@@ -1,12 +1,12 @@
 import z from "zod";
 import { cursorZodSchema, secretArrZodSchema } from "./secret.zod.js";
 
-export const getSecretByUserIdResponseSchema = z.object({
+export const getSecretByPaginationResponseSchema = z.object({
   data: secretArrZodSchema,
   nextCursor: cursorZodSchema.nullable(),
   hasNextPage: z.boolean(),
 });
 
-export type GetSecretByUserIdResponseType = z.infer<
-  typeof getSecretByUserIdResponseSchema
+export type GetSecretByPaginationResponseType = z.infer<
+  typeof getSecretByPaginationResponseSchema
 >;

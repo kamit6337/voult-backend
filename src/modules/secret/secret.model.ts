@@ -58,13 +58,16 @@ secretSchema.index({
 });
 
 secretSchema.index({
-  projectId: 1,
-});
-
-secretSchema.index({
   userId: 1,
   favourite: 1,
   createdAt: -1,
+  _id: -1,
+});
+
+secretSchema.index({
+  projectId: 1,
+  createdAt: -1,
+  _id: -1,
 });
 
 secretSchema.pre("save", function () {
