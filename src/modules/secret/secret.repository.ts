@@ -1,10 +1,19 @@
 import { AppError } from "@/shared/errors/app-error.js";
 import { SecretModel } from "./secret.model.js";
-import { CreateSecretType, UpdateSecretRepoType } from "./secret.types.js";
+import {
+  CreateSecretType,
+  Secret,
+  SecretDocument,
+  UpdateSecretRepoType,
+} from "./secret.types.js";
 import { decryptSecretValue } from "@/shared/utils/decryptSecretValue.js";
+import mongoose from "mongoose";
+import { toSecretResponse } from "./secret.mapper.js";
+import { GetSecretByUserIdResponseType } from "./secret.response.js";
+import { CursorZodSchemaType, SecretZodSchemaType } from "./secret.zod.js";
 
 class SecretRepository {
-  async create(data: CreateSecretType) {
+  async create(data: CreateSecretType): Promise<SecretZodSchemaType> {
     const secret = await SecretModel.create({
       userId: data.userId,
       projectId: data.projectId,
@@ -13,20 +22,72 @@ class SecretRepository {
       favourite: data.favourite,
     });
 
-    return decryptSecretValue(secret);
+    const decryptValue = decryptSecretValue(secret);
+
+    return toSecretResponse(decryptValue);
   }
 
-  async getByUserId(userId: string, page = 1, limit = 30) {
-    const skip = (page - 1) * limit;
+  async getByUserId(
+    userId: string,
+    cursor: CursorZodSchemaType | null,
+    limit = 5,
+  ): Promise<GetSecretByUserIdResponseType> {
+    if (!mongoose.isValidObjectId(userId)) {
+      throw new AppError(404, "Invalid userId");
+    }
 
-    const result = await SecretModel.find({
+    const query: mongoose.QueryFilter<Secret> = {
       userId,
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    };
 
-    return decryptSecretValue(result);
+    if (cursor) {
+      const date = new Date(cursor.createdAt);
+
+      if (
+        Number.isNaN(date.getTime()) ||
+        !mongoose.isValidObjectId(cursor._id)
+      ) {
+        throw new AppError(404, "Invalid cursor");
+      }
+
+      query.$or = [
+        {
+          createdAt: { $lt: date },
+        },
+        {
+          createdAt: date,
+          _id: {
+            $lt: new mongoose.Types.ObjectId(cursor._id),
+          },
+        },
+      ];
+    }
+
+    const secrets = await SecretModel.find(query)
+      .sort({ createdAt: -1, _id: -1 })
+      .limit(limit + 1);
+
+    const hasNextPage = secrets.length > limit;
+
+    const data = secrets.slice(0, limit);
+
+    const lastProject = data.at(-1);
+
+    const nextCursor =
+      hasNextPage && lastProject
+        ? {
+            createdAt: lastProject.createdAt.toISOString(),
+            _id: lastProject._id.toString(),
+          }
+        : null;
+
+    // return decryptSecretValue(result);
+
+    return {
+      data: decryptSecretValue(data).map((i) => toSecretResponse(i)),
+      nextCursor,
+      hasNextPage,
+    };
   }
 
   async getFavouriteByUserId(userId: string, page = 1, limit = 10) {

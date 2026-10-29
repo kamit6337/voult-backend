@@ -6,6 +6,7 @@ import {
   serializerCompiler,
 } from "@/shared/validation/zod.js";
 import { env } from "./config/env.js";
+import qs from "qs";
 
 const logger =
   env.NODE_ENV === "development"
@@ -19,6 +20,9 @@ const logger =
 export async function buildApp() {
   const fastify = Fastify({
     logger,
+    routerOptions: {
+      querystringParser: (str) => qs.parse(str),
+    },
   });
 
   // validator and serializer zod schema

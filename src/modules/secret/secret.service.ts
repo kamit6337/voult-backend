@@ -1,11 +1,16 @@
 import { toSecretResponse } from "./secret.mapper.js";
 import { secretRepository } from "./secret.repository.js";
+import { GetSecretByUserIdResponseType } from "./secret.response.js";
 import { CreateSecretType, UpdateSecretRepoType } from "./secret.types.js";
+import { CursorZodSchemaType, SecretZodSchemaType } from "./secret.zod.js";
 
 class SecretService {
-  async getByUserId(userId: string) {
-    const results = await secretRepository.getByUserId(userId);
-    return results.map((i) => toSecretResponse(i));
+  async getByUserId(
+    userId: string,
+    cursor: CursorZodSchemaType | null,
+  ): Promise<GetSecretByUserIdResponseType> {
+    const results = await secretRepository.getByUserId(userId, cursor);
+    return results;
   }
 
   async getByProjectId(projectId: string) {
@@ -13,9 +18,9 @@ class SecretService {
     return results.map((i) => toSecretResponse(i));
   }
 
-  async create(data: CreateSecretType) {
+  async create(data: CreateSecretType): Promise<SecretZodSchemaType> {
     const result = await secretRepository.create(data);
-    return toSecretResponse(result);
+    return result;
   }
 
   async updateValue(data: UpdateSecretRepoType) {

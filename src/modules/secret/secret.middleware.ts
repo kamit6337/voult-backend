@@ -3,6 +3,7 @@ import {
   createSecretSchema,
   deleteSecretSchema,
   getSecretByProjectIdSchema,
+  getSecretByUserIdSchema,
   updateSecretFavouriteSchema,
   updateSecretSchema,
 } from "./secret.request.js";
@@ -11,12 +12,14 @@ import {
   secretZodSchema,
   zodString,
 } from "./secret.zod.js";
+import { getSecretByUserIdResponseSchema } from "./secret.response.js";
 
 export const getSecretByUserIdValidationSchema: FastifySchema = {
   tags: ["Secrets"],
   summary: "get",
+  querystring: getSecretByUserIdSchema,
   response: {
-    200: secretArrZodSchema,
+    200: getSecretByUserIdResponseSchema,
   },
 };
 

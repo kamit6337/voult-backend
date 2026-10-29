@@ -4,16 +4,24 @@ import {
   CreateSecretSchemaType,
   DeleteSecretSchemaType,
   GetSecretByProjectIdSchemaType,
+  GetSecretByUserIdSchemaType,
   UpdateSecretFavouriteSchemaType,
   UpdateSecretSchemaType,
 } from "./secret.request.js";
 import convertToMongoId from "@/utils/convertToMongoId.js";
 
 class SecretHandler {
-  async getByUserId(request: FastifyRequest, reply: FastifyReply) {
+  async getByUserId(
+    request: FastifyRequest<{ Querystring: GetSecretByUserIdSchemaType }>,
+    reply: FastifyReply,
+  ) {
     const { userId } = request.userObj;
 
-    const results = await secretService.getByUserId(userId);
+    const results = await secretService.getByUserId(
+      userId,
+      request.query.cursor,
+    );
+
     return reply.send(results);
   }
 
@@ -76,7 +84,7 @@ class SecretHandler {
     request: FastifyRequest<{ Querystring: DeleteSecretSchemaType }>,
     reply: FastifyReply,
   ) {
-    const result = await secretService.deleteSecret(request.query._id);
+    const result = await secretService.deleteSecret(request.query.id);
 
     return reply.send(result);
   }

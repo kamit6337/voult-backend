@@ -17,4 +17,11 @@ export const secretArrZodSchema = z.array(secretZodSchema);
 
 export const zodString = z.string().min(3);
 
+export const cursorZodSchema = z.object({
+  _id: z.string().min(3),
+  createdAt: z.string().min(3),
+});
+
+export type CursorZodSchemaType = z.infer<typeof cursorZodSchema>;
+
 export type SecretZodSchemaType = z.infer<typeof secretZodSchema>;

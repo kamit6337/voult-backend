@@ -1,5 +1,13 @@
 import z from "zod";
-import { secretZodSchema } from "./secret.zod.js";
+import { cursorZodSchema, secretZodSchema } from "./secret.zod.js";
+
+export const getSecretByUserIdSchema = z.object({
+  cursor: cursorZodSchema.nullable().default(null),
+});
+
+export type GetSecretByUserIdSchemaType = z.infer<
+  typeof getSecretByUserIdSchema
+>;
 
 export const getSecretByProjectIdSchema = z.object({
   id: z.string().min(3),
@@ -37,8 +45,8 @@ export type UpdateSecretFavouriteSchemaType = z.infer<
   typeof updateSecretFavouriteSchema
 >;
 
-export const deleteSecretSchema = secretZodSchema.pick({
-  _id: true,
+export const deleteSecretSchema = z.object({
+  id: z.string().min(3),
 });
 
 export type DeleteSecretSchemaType = z.infer<typeof deleteSecretSchema>;

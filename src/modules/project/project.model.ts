@@ -26,4 +26,6 @@ const projectSchema = new mongoose.Schema<Project>(
 
 projectSchema.index({ userId: 1, name: 1 }, { unique: true });
 
+projectSchema.index({ userId: 1, favourite: 1, createdAt: -1, _id: -1 });
+
 export const ProjectModel = mongoose.model("Project", projectSchema);
