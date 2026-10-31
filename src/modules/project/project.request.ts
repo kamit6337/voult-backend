@@ -22,8 +22,9 @@ export const updateProjectSchema = projectZodSchema.pick({
 
 export type UpdateProjectSchemaType = z.infer<typeof updateProjectSchema>;
 
-export const deleteProjectSchema = projectZodSchema.pick({
-  _id: true,
+export const deleteProjectSchema = z.object({
+  id: z.string().min(3),
+  isDeleteSecretsAlso: z.stringbool().default(false),
 });
 
 export type DeleteProjectSchemaType = z.infer<typeof deleteProjectSchema>;

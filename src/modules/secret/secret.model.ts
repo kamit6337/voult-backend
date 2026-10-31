@@ -70,6 +70,10 @@ secretSchema.index({
   _id: -1,
 });
 
+secretSchema.index({
+  projectId: 1,
+});
+
 secretSchema.pre("save", function () {
   if (!this.isModified("value")) return;
   this.value = encrypt(this.value);

@@ -2,6 +2,7 @@ import { AppError } from "@/shared/errors/app-error.js";
 import { toProjectResponse } from "./project.mapper.js";
 import { projectRepository } from "./project.repository.js";
 import { CreateProjectType, UpdateProjectType } from "./project.types.js";
+import { DeleteProjectResponseZodType } from "./project.response.js";
 
 class ProjectService {
   async create(data: CreateProjectType) {
@@ -30,12 +31,18 @@ class ProjectService {
     return toProjectResponse(result);
   }
 
-  async deleteProject(projectId: string) {
-    const result = await projectRepository.deleteProject(projectId);
+  async deleteProject(
+    projectId: string,
+    userId: string,
+    isDeleteSecretsAlso = false,
+  ): Promise<DeleteProjectResponseZodType> {
+    const result = await projectRepository.deleteProject(
+      projectId,
+      userId,
+      isDeleteSecretsAlso,
+    );
 
-    if (!result) throw new Error("Issue in deleting Project");
-
-    return "Successfully Deleted";
+    return result;
   }
 }
 

@@ -10,7 +10,7 @@
     "build": "tsc && tsc-alias",
     "start": "node dist/server.js",
     "clean": "rm -rf dist",
-    "crypto": "node generateEncrypt.js"
+    "crypto": "node docs/generateEncrypt.js"
   },
   "keywords": [],
   "author": "",

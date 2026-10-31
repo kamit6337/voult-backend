@@ -9,7 +9,9 @@ import {
   projectArraySchema,
   projectZodSchema,
   zodString,
+  zodStringArray,
 } from "./project.zod.js";
+import { deleteProjectResponseZodSchema } from "./project.response.js";
 
 export const createProjectValidation: FastifySchema = {
   tags: ["Project"],
@@ -51,6 +53,6 @@ export const deleteProjectValidation: FastifySchema = {
   summary: "delete",
   querystring: deleteProjectSchema,
   response: {
-    200: zodString,
+    200: deleteProjectResponseZodSchema,
   },
 };

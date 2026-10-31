@@ -1,6 +1,9 @@
 import { AppError } from "@/shared/errors/app-error.js";
 import { ProjectModel } from "./project.model.js";
 import { CreateProjectType, UpdateProjectType } from "./project.types.js";
+import { secretRepository } from "../secret/secret.repository.js";
+import mongoose from "mongoose";
+import { SecretModel } from "../secret/secret.model.js";
 
 class ProjectRepository {
   async create(data: CreateProjectType) {
@@ -87,12 +90,47 @@ class ProjectRepository {
     );
   }
 
-  async deleteProject(projectId: string) {
-    if (!projectId) throw new Error("ProjectId is missing");
+  async deleteProject(
+    projectId: string,
+    userId: string,
+    isDeleteSecretsAlso = false,
+  ) {
+    if (!projectId || !userId)
+      throw new Error("ProjectId and UserId are missing");
 
-    return ProjectModel.findOneAndDelete({
-      _id: projectId,
-    });
+    const mongooseTransaction = await mongoose.connection.transaction(
+      async (session) => {
+        const deleteProject = await ProjectModel.findOneAndDelete(
+          {
+            _id: projectId,
+            userId,
+          },
+          {
+            session,
+          },
+        );
+
+        if (!deleteProject) throw new Error("Project not found");
+
+        if (isDeleteSecretsAlso) {
+          await SecretModel.deleteMany({ projectId }, { session });
+        } else {
+          await SecretModel.updateMany(
+            { projectId },
+            {
+              $set: { projectId: null },
+            },
+            { session },
+          );
+        }
+
+        const secretIds = await SecretModel.distinct("_id", { projectId });
+
+        return secretIds.map(String);
+      },
+    );
+
+    return { secretIds: mongooseTransaction, isDeleteSecretsAlso };
   }
 }
 

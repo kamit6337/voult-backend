@@ -62,7 +62,13 @@ class ProjectHandler {
     request: FastifyRequest<{ Querystring: DeleteProjectSchemaType }>,
     reply: FastifyReply,
   ) {
-    const result = await projectService.deleteProject(request.query._id);
+    const { userId } = request.userObj;
+
+    const result = await projectService.deleteProject(
+      request.query.id,
+      userId,
+      request.query.isDeleteSecretsAlso,
+    );
 
     return reply.send(result);
   }
