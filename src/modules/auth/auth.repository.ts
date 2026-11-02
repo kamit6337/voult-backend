@@ -67,6 +67,7 @@ class AuthRepository {
             lastName: userData.lastName,
             email: userData.email,
             isEmailVerified: userData.isEmailVerified,
+            password: userData.password,
           },
           session,
         );

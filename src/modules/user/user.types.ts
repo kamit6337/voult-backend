@@ -8,6 +8,8 @@ export interface User {
   email: string;
   avatar?: string;
 
+  password: string | null;
+
   role: UserRole;
 
   isEmailVerified: boolean;
@@ -23,5 +25,5 @@ export type UserDocument = HydratedDocument<User>;
 
 export type CreateUserRepoType = Pick<
   User,
-  "firstName" | "lastName" | "email" | "isEmailVerified" | "avatar"
+  "firstName" | "lastName" | "email" | "isEmailVerified" | "avatar" | "password"
 >;

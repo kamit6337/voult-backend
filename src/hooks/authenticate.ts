@@ -1,10 +1,10 @@
 import { env } from "@/config/env.js";
 import { authCookie } from "@/modules/auth/auth.cookie.js";
-import { authService } from "@/modules/auth/auth.service.js";
 import {
   AccessTokenObjType,
   RefreshTokenObjType,
 } from "@/modules/auth/auth.types.js";
+import { sessionService } from "@/modules/auth/session.service.js";
 import { decrypt } from "@/shared/utils/encrypt.js";
 import { jwtEncrypt } from "@/shared/utils/jwtEncrypt.js";
 import { FastifyReply, FastifyRequest } from "fastify";
@@ -42,7 +42,7 @@ export async function authenticate(
       }
 
       const result =
-        await authService.checkSessionWithRefreshToken(refreshTokenObj);
+        await sessionService.checkSessionWithRefreshToken(refreshTokenObj);
 
       authCookie.setAccessToken(reply, result.accessToken);
       authCookie.setRefreshToken(reply, result.refreshToken);

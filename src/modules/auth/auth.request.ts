@@ -1,5 +1,21 @@
 import z from "zod";
 
+export const signInRequestSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8),
+});
+
+export type SignInRequestType = z.infer<typeof signInRequestSchema>;
+
+export const signUpRequestSchema = z.object({
+  firstName: z.string().min(3).max(20),
+  lastName: z.string().min(3).max(20),
+  email: z.email(),
+  password: z.string().min(8, "Password need to be strong").max(20),
+});
+
+export type SignUpRequestType = z.infer<typeof signUpRequestSchema>;
+
 export const loginRequestSchema = z.object({
   email: z.email(),
 });

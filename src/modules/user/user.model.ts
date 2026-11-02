@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { User } from "./user.types.js";
+import { hashPassword } from "@/shared/utils/bcrypt.js";
 
 const userSchema = new Schema<User>(
   {
@@ -31,6 +32,12 @@ const userSchema = new Schema<User>(
       type: String,
     },
 
+    password: {
+      type: String,
+      default: null,
+      lowercase: true,
+    },
+
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -56,5 +63,11 @@ const userSchema = new Schema<User>(
     timestamps: true,
   },
 );
+
+userSchema.pre("save", async function (this) {
+  if (this.password) {
+    this.password = await hashPassword(this.password);
+  }
+});
 
 export const UserModel = model("User", userSchema);

@@ -40,6 +40,7 @@ class OAuthRepository {
             email: userData.email,
             isEmailVerified: userData.isEmailVerified,
             avatar: userData.avatar,
+            password: null,
           },
           session,
         );

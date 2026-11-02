@@ -4,6 +4,8 @@ import {
   LoginRequestType,
   OAuthSessionRequestType,
   RegisterRequestType,
+  SignInRequestType,
+  SignUpRequestType,
   VerifyOTPRequestType,
 } from "./auth.request.js";
 import { AUTH_HANDLER_ENCRYPT_TYPE } from "./auth.types.js";
@@ -14,8 +16,65 @@ import { jwtEncrypt } from "@/shared/utils/jwtEncrypt.js";
 import { OAuthEncryptionType } from "./oauth/oauth.types.js";
 import convertToMongoId from "@/utils/convertToMongoId.js";
 import { oauthCookie } from "./oauth/oauth.cookie.js";
+import { sessionService } from "./session.service.js";
 
 class AuthHandler {
+  async signin(
+    request: FastifyRequest<{
+      Body: SignInRequestType;
+    }>,
+    reply: FastifyReply,
+  ) {
+    const userAgent = request.headers["user-agent"];
+    const ipAddress = request.ip;
+
+    const { email, password } = request.body;
+
+    const result = await authService.signin({
+      email,
+      password,
+      ipAddress,
+      userAgent,
+    });
+
+    authCookie.setAccessToken(reply, result.accessToken);
+    authCookie.setRefreshToken(reply, result.refreshToken);
+
+    return {
+      success: true,
+      message: "User Login completed successfully.",
+    };
+  }
+
+  async signup(
+    request: FastifyRequest<{
+      Body: SignUpRequestType;
+    }>,
+    reply: FastifyReply,
+  ) {
+    const userAgent = request.headers["user-agent"];
+    const ipAddress = request.ip;
+
+    const { email, password, firstName, lastName } = request.body;
+
+    const result = await authService.signup({
+      email,
+      firstName,
+      lastName,
+      password,
+      ipAddress,
+      userAgent,
+    });
+
+    authCookie.setAccessToken(reply, result.accessToken);
+    authCookie.setRefreshToken(reply, result.refreshToken);
+
+    return {
+      success: true,
+      message: "User SignUp completed successfully.",
+    };
+  }
+
   async login(
     request: FastifyRequest<{
       Body: LoginRequestType;
@@ -161,7 +220,7 @@ class AuthHandler {
       secret: env.JWT_ENCRYPTION_KEY,
     });
 
-    const result = await authService.accessAndRefreshToken({
+    const result = await sessionService.accessAndRefreshToken({
       email: decrypt.email,
       userId: convertToMongoId(decrypt.userId),
       userAgent,
