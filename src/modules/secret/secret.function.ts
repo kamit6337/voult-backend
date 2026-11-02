@@ -5,13 +5,13 @@ import { AppError } from "@/shared/errors/app-error.js";
 import { SecretModel } from "./secret.model.js";
 import { decryptSecretValue } from "@/shared/utils/decryptSecretValue.js";
 import { toSecretResponse } from "./secret.mapper.js";
-import { GetSecretByUserIdResponseType } from "./secret.response.js";
+import { GetSecretByPaginationResponseType } from "./secret.response.js";
 
 export const secretPaginatedQuery = async (
   query: mongoose.QueryFilter<Secret>,
   cursor: CursorZodSchemaType | null,
   limit = 5,
-): Promise<GetSecretByUserIdResponseType> => {
+): Promise<GetSecretByPaginationResponseType> => {
   //  const query: mongoose.QueryFilter<Secret> = {
   //       userId,
   //     };

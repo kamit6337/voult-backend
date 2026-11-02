@@ -26,7 +26,9 @@ class OAuthRepository {
   }
 
   async createOAuthAndUser(
-    userData: Omit<CreateUserRepoType, "avatar"> & { avatar: string },
+    userData: Omit<CreateUserRepoType, "avatar" | "password"> & {
+      avatar: string;
+    },
     oauthData: GetUserRepoType,
   ) {
     const session = await mongoose.startSession();
